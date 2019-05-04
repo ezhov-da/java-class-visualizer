@@ -47,7 +47,7 @@ public class BasePackagePanel extends JPanel {
             List<PackagePanel> packagePanels = new ArrayList<>();
             LOG.trace("{}. Количество подпакетов {}", packageName, packageNames.size());
             for (String pn : packageNames) {
-                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage));
+                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage, 20, 20));
             }
             int columnAndRows = (int) Math.ceil(Math.sqrt(packagePanels.size()));
             LOG.trace("{}. Посчитанное количество строк и столбцов пакетов {}", packageName, columnAndRows);
@@ -83,7 +83,7 @@ public class BasePackagePanel extends JPanel {
             height = sizePackageHeightClean + maxHeight + indent;
         }
 
-        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames());
+        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames(), 20, 20);
         classBandlePanel.setLocation(indent, height + indent);
         add(classBandlePanel);
 
@@ -95,13 +95,13 @@ public class BasePackagePanel extends JPanel {
         LOG.trace("{}. Ширина и высота пакета: W {} H {}", packageName, widthFinal, heightFinal);
     }
 
-    private ClassBandlePanel buildClassBandlePanel(Set<String> classNames) {
+    private ClassBandlePanel buildClassBandlePanel(Set<String> classNames, int width, int height) {
         List<Class_> classes = new ArrayList<>();
         for (String className : classNames) {
             Class_ classByName = javaResource.getClassByName(className);
             classes.add(classByName);
         }
-        return new ClassBandlePanel(classes, classPanelLocationStorage);
+        return new ClassBandlePanel(classes, classPanelLocationStorage, width, height);
     }
 
     public String getPackageName() {
@@ -118,6 +118,10 @@ public class BasePackagePanel extends JPanel {
         rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.setRenderingHints(rh);
+        drawDependencies(graphics2D);
+    }
+
+    private void drawDependencies(Graphics2D graphics2D) {
         graphics2D.setColor(Color.GRAY);
 
         Map<String, ClassPanel> all = classPanelLocationStorage.all();

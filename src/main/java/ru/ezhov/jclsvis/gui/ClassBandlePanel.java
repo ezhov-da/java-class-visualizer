@@ -4,6 +4,7 @@ import clsvis.model.Class_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.ezhov.jclsvis.core.domain.JavaResource;
+import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,14 +19,14 @@ public class ClassBandlePanel extends JPanel {
     private Collection<Class_> classes;
     private List<ClassPanel> classPanels = new ArrayList<>();
 
-    public ClassBandlePanel(Collection<Class_> classes, ClassPanelLocationStorage classPanelLocationStorage) {
+    public ClassBandlePanel(Collection<Class_> classes, ClassPanelLocationStorage classPanelLocationStorage, int width, int height) {
         setLayout(null);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         LOG.trace("Передано на построение {} класса(ов)", classes.size());
         this.classes = classes;
         if (classes.isEmpty()) return;
         for (Class_ class_ : classes) {
-            classPanels.add(new ClassPanel(class_));
+            classPanels.add(new ClassPanel(class_, width, height));
         }
         int columnAndRows = (int) Math.ceil(Math.sqrt(classPanels.size()));
         LOG.trace("Посчитанное количество строк и столбцов {}", columnAndRows);
@@ -64,5 +65,9 @@ public class ClassBandlePanel extends JPanel {
         setSize(dimension);
         setPreferredSize(dimension);
         LOG.trace("Ширина и высота сборки: W {} H {}", maxWidth, maxHeight);
+
+        MouseMoveWindowListener mouseMoveWindowListener = new MouseMoveWindowListener(this);
+        this.addMouseMotionListener(mouseMoveWindowListener);
+        this.addMouseListener(mouseMoveWindowListener);
     }
 }

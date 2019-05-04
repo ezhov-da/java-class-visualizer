@@ -8,6 +8,8 @@ import ru.ezhov.jclsvis.core.domain.JavaResource;
 import javax.swing.*;
 
 import ru.ezhov.jclsvis.core.domain.Package;
+import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
+import ru.ezhov.jclsvis.gui.utils.MouseResizeWindowListener;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -21,20 +23,26 @@ public class PackagePanel extends JPanel {
     private JavaResource javaResource;
     private Package aPackage;
     private ClassPanelLocationStorage classPanelLocationStorage;
+    private int widthClass;
+    private int heightClass;
 
-    public PackagePanel(JavaResource javaResource, Collection<Package> packages) {
+    public PackagePanel(JavaResource javaResource, Collection<Package> packages, int widthClass, int heightClass) {
         Package aPackage = new Package("DEFAULT");
         packages.forEach(p -> aPackage.addPackageName(p.getName()));
         this.javaResource = javaResource;
         this.aPackage = aPackage;
+        this.widthClass = widthClass;
+        this.heightClass = heightClass;
         init();
     }
 
 
-    public PackagePanel(JavaResource javaResource, Package aPackage, ClassPanelLocationStorage classPanelLocationStorage) {
+    public PackagePanel(JavaResource javaResource, Package aPackage, ClassPanelLocationStorage classPanelLocationStorage, int widthClass, int heightClass) {
         this.javaResource = javaResource;
         this.aPackage = aPackage;
         this.classPanelLocationStorage = classPanelLocationStorage;
+        this.widthClass = widthClass;
+        this.heightClass = heightClass;
         init();
     }
 
@@ -57,7 +65,7 @@ public class PackagePanel extends JPanel {
             List<PackagePanel> packagePanels = new ArrayList<>();
             LOG.trace("{}. Количество подпакетов {}", packageName, packageNames.size());
             for (String pn : packageNames) {
-                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage));
+                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage, widthClass, heightClass));
             }
             int columnAndRows = (int) Math.ceil(Math.sqrt(packagePanels.size()));
             LOG.trace("{}. Посчитанное количество строк и столбцов пакетов {}", packageName, columnAndRows);
@@ -93,7 +101,7 @@ public class PackagePanel extends JPanel {
             height = sizePackageHeightClean + maxHeight + indent;
         }
 
-        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames());
+        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames(), widthClass, heightClass);
         classBandlePanel.setLocation(indent, height + indent);
         add(classBandlePanel);
 
@@ -107,28 +115,38 @@ public class PackagePanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(Color.RED),
-                        BorderFactory.createTitledBorder(aPackage.getName())
-                ));
-
+                SwingUtilities.invokeLater(() -> {
+                    setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(Color.RED),
+                            BorderFactory.createTitledBorder(aPackage.getName())
+                    ));
+                });
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
+                SwingUtilities.invokeLater(() -> {
+                    setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
+                });
             }
-
         });
+
+        MouseMoveWindowListener mouseMoveWindowListener = new MouseMoveWindowListener(this);
+        this.addMouseMotionListener(mouseMoveWindowListener);
+        this.addMouseListener(mouseMoveWindowListener);
+
+        MouseResizeWindowListener mouseResizeWindowListener = new MouseResizeWindowListener(this);
+        this.addMouseMotionListener(mouseResizeWindowListener);
+        this.addMouseListener(mouseResizeWindowListener);
     }
 
-    private ClassBandlePanel buildClassBandlePanel(Set<String> classNames) {
+    private ClassBandlePanel buildClassBandlePanel(Set<String> classNames, int width, int height) {
         List<Class_> classes = new ArrayList<>();
         for (String className : classNames) {
             Class_ classByName = javaResource.getClassByName(className);
             classes.add(classByName);
         }
-        return new ClassBandlePanel(classes, classPanelLocationStorage);
+        return new ClassBandlePanel(classes, classPanelLocationStorage, width, height);
     }
 
     public String getPackageName() {

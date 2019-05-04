@@ -46,7 +46,8 @@ public class Application {
             BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
             panelBasic.add(basePackagePanel, BorderLayout.CENTER);
 
-            frame.add(new JScrollPane(panelBasic));
+            JScrollPane scrollPane = new JScrollPane(panelBasic);
+            frame.add(scrollPane);
             frame.setSize(1500, 600);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

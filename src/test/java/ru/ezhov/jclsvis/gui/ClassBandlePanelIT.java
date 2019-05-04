@@ -35,7 +35,7 @@ public class ClassBandlePanelIT {
             List<Class_> list = new ArrayList<>(importedClasses);
             List<Class_> class_s = list.subList(0, 5);
 
-            ClassBandlePanel classBandlePanel = new ClassBandlePanel(class_s, new ClassPanelLocationStorage());
+            ClassBandlePanel classBandlePanel = new ClassBandlePanel(class_s, new ClassPanelLocationStorage(), 20, 20);
             classBandlePanel.setLocation(0, 0);
             JFrame frame = new JFrame("_________");
             frame.add(classBandlePanel, BorderLayout.CENTER);
