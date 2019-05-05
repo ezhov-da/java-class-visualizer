@@ -6,6 +6,8 @@ import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ClassPanel extends JPanel {
     private Class_ class_;
@@ -24,6 +26,25 @@ public class ClassPanel extends JPanel {
 
         label.setBackground(Color.decode("#" + Utils.colorAsRRGGBB(class_.kind.colorNum)));
         label.setOpaque(true);
+
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    selected = !selected;
+                    if (selected) {
+                        setBorder(
+                                BorderFactory.createCompoundBorder(
+                                        BorderFactory.createLineBorder(Color.RED),
+                                        BorderFactory.createLineBorder(Color.GRAY)
+                                )
+                        );
+                    } else {
+                        setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                    }
+                }
+            }
+        });
 
         setSize(width, height);
         setPreferredSize(new Dimension(width, height));

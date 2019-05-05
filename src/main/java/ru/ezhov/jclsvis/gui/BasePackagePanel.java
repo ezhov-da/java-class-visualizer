@@ -122,8 +122,6 @@ public class BasePackagePanel extends JPanel {
     }
 
     private void drawDependencies(Graphics2D graphics2D) {
-        graphics2D.setColor(Color.GRAY);
-
         Map<String, ClassPanel> all = classPanelLocationStorage.all();
         for (Map.Entry<String, ClassPanel> entry : all.entrySet()) {
             String name = entry.getKey();
@@ -148,6 +146,12 @@ public class BasePackagePanel extends JPanel {
                         SwingUtilities.convertPointFromScreen(p1, this);
                         Point p2 = new Point(locationRelation.x, locationRelation.y);
                         SwingUtilities.convertPointFromScreen(p2, this);
+
+                        if (classPanel.isSelected() || classPanelRelation.isSelected()) {
+                            graphics2D.setColor(Color.RED);
+                        } else {
+                            graphics2D.setColor(Color.LIGHT_GRAY);
+                        }
 
                         graphics2D.drawLine(p1.x, p1.y, p2.x, p2.y);
                         //TODO: верно рисовать линии
