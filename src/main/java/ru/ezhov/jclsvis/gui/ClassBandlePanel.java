@@ -3,7 +3,6 @@ package ru.ezhov.jclsvis.gui;
 import clsvis.model.Class_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.ezhov.jclsvis.core.domain.JavaResource;
 import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
 
 import javax.swing.*;

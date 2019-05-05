@@ -9,10 +9,8 @@ import ru.ezhov.jclsvis.core.domain.Package;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class Application {
     public static void main(String[] args) {

@@ -9,7 +9,6 @@ import javax.swing.*;
 
 import ru.ezhov.jclsvis.core.domain.Package;
 import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
-import ru.ezhov.jclsvis.gui.utils.MouseResizeWindowListener;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -134,10 +133,6 @@ public class PackagePanel extends JPanel {
         MouseMoveWindowListener mouseMoveWindowListener = new MouseMoveWindowListener(this);
         this.addMouseMotionListener(mouseMoveWindowListener);
         this.addMouseListener(mouseMoveWindowListener);
-
-        MouseResizeWindowListener mouseResizeWindowListener = new MouseResizeWindowListener(this);
-        this.addMouseMotionListener(mouseResizeWindowListener);
-        this.addMouseListener(mouseResizeWindowListener);
     }
 
     private ClassBandlePanel buildClassBandlePanel(Set<String> classNames, int width, int height) {
