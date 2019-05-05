@@ -19,6 +19,8 @@ public class BasePackagePanel extends JPanel {
     private JavaResource javaResource;
     private Package aPackage;
     private ClassPanelLocationStorage classPanelLocationStorage;
+    private int defaultClassWidth = 10;
+    private int defaultClassHeight = 10;
 
     public BasePackagePanel(JavaResource javaResource, Collection<Package> packages) {
         Package aPackage = new Package("DEFAULT");
@@ -47,7 +49,7 @@ public class BasePackagePanel extends JPanel {
             List<PackagePanel> packagePanels = new ArrayList<>();
             LOG.trace("{}. Количество подпакетов {}", packageName, packageNames.size());
             for (String pn : packageNames) {
-                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage, 20, 20));
+                packagePanels.add(new PackagePanel(javaResource, javaResource.getPackageByName(pn), classPanelLocationStorage, defaultClassWidth, defaultClassHeight));
             }
             int columnAndRows = (int) Math.ceil(Math.sqrt(packagePanels.size()));
             LOG.trace("{}. Посчитанное количество строк и столбцов пакетов {}", packageName, columnAndRows);
@@ -83,7 +85,7 @@ public class BasePackagePanel extends JPanel {
             height = sizePackageHeightClean + maxHeight + indent;
         }
 
-        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames(), 20, 20);
+        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames(), defaultClassWidth, defaultClassHeight);
         classBandlePanel.setLocation(indent, height + indent);
         add(classBandlePanel);
 
