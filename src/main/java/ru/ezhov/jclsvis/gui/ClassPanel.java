@@ -1,5 +1,6 @@
 package ru.ezhov.jclsvis.gui;
 
+import clsvis.Utils;
 import clsvis.model.Class_;
 import ru.ezhov.jclsvis.gui.utils.MouseMoveWindowListener;
 
@@ -20,6 +21,10 @@ public class ClassPanel extends JPanel {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         add(label, BorderLayout.CENTER);
         label.setToolTipText(class_.toString());
+
+        label.setBackground(Color.decode("#" + Utils.colorAsRRGGBB(class_.kind.colorNum)));
+        label.setOpaque(true);
+
         setSize(width, height);
         setPreferredSize(new Dimension(width, height));
 
