@@ -73,16 +73,17 @@ public class ClassBandlePanel extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        for (ClassPanel classPanel : classPanels) {
-            Graphics2D graphics2D = (Graphics2D) g;
-            Point locationOnScreen = classPanel.getLocationOnScreen();
-            Point location = classPanel.getLocation();
-            graphics2D.drawString(
-                    "x: " + locationOnScreen.x + " y: " + locationOnScreen.y,
-                    location.x,
-                    location.y - 5
-            );
+        if ("true".equals(System.getProperty("isDebug", "false"))) {
+            for (ClassPanel classPanel : classPanels) {
+                Graphics2D graphics2D = (Graphics2D) g;
+                Point locationOnScreen = classPanel.getLocationOnScreen();
+                Point location = classPanel.getLocation();
+                graphics2D.drawString(
+                        "x: " + locationOnScreen.x + " y: " + locationOnScreen.y,
+                        location.x,
+                        location.y - 5
+                );
+            }
         }
-
     }
 }

@@ -148,35 +148,35 @@ public class BasePackagePanel extends JPanel {
                             Dimension sizeRelation = classPanelRelation.getSize();
 
                             CenterPoints centerPointsOriginal = CenterPoints.from(classPanel);
-
-                            Point pointEast = centerPointsOriginal.getPointEast();
-                            SwingUtilities.convertPointFromScreen(pointEast, this);
-                            Point pointNorth = centerPointsOriginal.getPointNorth();
-                            SwingUtilities.convertPointFromScreen(pointNorth, this);
-                            Point pointSouth = centerPointsOriginal.getPointSouth();
-                            SwingUtilities.convertPointFromScreen(pointSouth, this);
-                            Point pointWest = centerPointsOriginal.getPointWest();
-                            SwingUtilities.convertPointFromScreen(pointWest, this);
-                            graphics2D.drawString("x: " + pointEast.x + " y: " + pointEast.y, pointEast.x, pointEast.y);
-                            graphics2D.drawString("x: " + pointNorth.x + " y: " + pointNorth.y, pointNorth.x, pointNorth.y);
-                            graphics2D.drawString("x: " + pointSouth.x + " y: " + pointSouth.y, pointSouth.x, pointSouth.y);
-                            graphics2D.drawString("x: " + pointWest.x + " y: " + pointWest.y, pointWest.x, pointWest.y);
-
-
                             CenterPoints centerPointsRelation = CenterPoints.from(classPanelRelation);
-                            Point pointEastRelation = centerPointsRelation.getPointEast();
-                            SwingUtilities.convertPointFromScreen(pointEastRelation, this);
-                            Point pointNorthRelation = centerPointsRelation.getPointNorth();
-                            SwingUtilities.convertPointFromScreen(pointNorthRelation, this);
-                            Point pointSouthRelation = centerPointsRelation.getPointSouth();
-                            SwingUtilities.convertPointFromScreen(pointSouthRelation, this);
-                            Point pointWestRelation = centerPointsRelation.getPointWest();
-                            SwingUtilities.convertPointFromScreen(pointWestRelation, this);
-                            graphics2D.drawString("x: " + pointEastRelation.x + " y: " + pointEastRelation.y, pointEastRelation.x, pointEastRelation.y);
-                            graphics2D.drawString("x: " + pointNorthRelation.x + " y: " + pointNorthRelation.y, pointNorthRelation.x, pointNorthRelation.y);
-                            graphics2D.drawString("x: " + pointSouthRelation.x + " y: " + pointSouthRelation.y, pointSouthRelation.x, pointSouthRelation.y);
-                            graphics2D.drawString("x: " + pointWestRelation.x + " y: " + pointWestRelation.y, pointWestRelation.x, pointWestRelation.y);
 
+                            if ("true".equals(System.getProperty("isDebug", "false"))) {
+                                Point pointEast = centerPointsOriginal.getPointEast();
+                                SwingUtilities.convertPointFromScreen(pointEast, this);
+                                Point pointNorth = centerPointsOriginal.getPointNorth();
+                                SwingUtilities.convertPointFromScreen(pointNorth, this);
+                                Point pointSouth = centerPointsOriginal.getPointSouth();
+                                SwingUtilities.convertPointFromScreen(pointSouth, this);
+                                Point pointWest = centerPointsOriginal.getPointWest();
+                                SwingUtilities.convertPointFromScreen(pointWest, this);
+                                graphics2D.drawString("x: " + pointEast.x + " y: " + pointEast.y, pointEast.x, pointEast.y);
+                                graphics2D.drawString("x: " + pointNorth.x + " y: " + pointNorth.y, pointNorth.x, pointNorth.y);
+                                graphics2D.drawString("x: " + pointSouth.x + " y: " + pointSouth.y, pointSouth.x, pointSouth.y);
+                                graphics2D.drawString("x: " + pointWest.x + " y: " + pointWest.y, pointWest.x, pointWest.y);
+
+                                Point pointEastRelation = centerPointsRelation.getPointEast();
+                                SwingUtilities.convertPointFromScreen(pointEastRelation, this);
+                                Point pointNorthRelation = centerPointsRelation.getPointNorth();
+                                SwingUtilities.convertPointFromScreen(pointNorthRelation, this);
+                                Point pointSouthRelation = centerPointsRelation.getPointSouth();
+                                SwingUtilities.convertPointFromScreen(pointSouthRelation, this);
+                                Point pointWestRelation = centerPointsRelation.getPointWest();
+                                SwingUtilities.convertPointFromScreen(pointWestRelation, this);
+                                graphics2D.drawString("x: " + pointEastRelation.x + " y: " + pointEastRelation.y, pointEastRelation.x, pointEastRelation.y);
+                                graphics2D.drawString("x: " + pointNorthRelation.x + " y: " + pointNorthRelation.y, pointNorthRelation.x, pointNorthRelation.y);
+                                graphics2D.drawString("x: " + pointSouthRelation.x + " y: " + pointSouthRelation.y, pointSouthRelation.x, pointSouthRelation.y);
+                                graphics2D.drawString("x: " + pointWestRelation.x + " y: " + pointWestRelation.y, pointWestRelation.x, pointWestRelation.y);
+                            }
                             MinimalDistance minimalDistance = new MinimalDistance();
                             Distance distance = minimalDistance.find(centerPointsOriginal, centerPointsRelation);
 
