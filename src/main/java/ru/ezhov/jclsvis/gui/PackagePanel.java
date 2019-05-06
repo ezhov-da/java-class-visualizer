@@ -52,8 +52,8 @@ public class PackagePanel extends JPanel {
         setLayout(null);
         setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
 
-        int widthDefault = 100;
-        int heightDefault = 100;
+        int widthDefault = 5;
+        int heightDefault = 5;
 
         int indent = 15;
 
