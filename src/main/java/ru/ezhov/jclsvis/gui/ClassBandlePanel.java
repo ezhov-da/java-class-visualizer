@@ -50,7 +50,7 @@ public class ClassBandlePanel extends JPanel {
                     add(classPanelLast);
                     classPanelLocationStorage.add(classPanelLast.getClass_().getOriginalTypeName(), classPanelLast);
                 } else {
-                    if (classPanelLast != null) {
+                    if (classPanelLast != null && c != 0 /*это значит, что ряд полностью не заполнился*/) {
                         maxHeight = Math.max(maxHeight, sizeHeightClean + classPanelLast.getHeight() + indent);
                     }
                     break exit;
