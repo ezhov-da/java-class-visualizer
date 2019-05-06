@@ -19,7 +19,7 @@ public class ClassPanel extends JPanel {
         setLayout(new BorderLayout());
         this.class_ = class_;
         String originalTypeName = class_.getOriginalTypeName();
-        label.setText(originalTypeName);
+        label.setText(class_.name);
         label.setHorizontalAlignment(SwingConstants.CENTER);
         add(label, BorderLayout.CENTER);
         label.setToolTipText(class_.toString());
