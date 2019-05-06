@@ -69,4 +69,20 @@ public class ClassBandlePanel extends JPanel {
         this.addMouseMotionListener(mouseMoveWindowListener);
         this.addMouseListener(mouseMoveWindowListener);
     }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        for (ClassPanel classPanel : classPanels) {
+            Graphics2D graphics2D = (Graphics2D) g;
+            Point locationOnScreen = classPanel.getLocationOnScreen();
+            Point location = classPanel.getLocation();
+            graphics2D.drawString(
+                    "x: " + locationOnScreen.x + " y: " + locationOnScreen.y,
+                    location.x,
+                    location.y - 5
+            );
+        }
+
+    }
 }

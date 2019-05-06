@@ -41,7 +41,9 @@ public class Application {
 //            PackagePanel packagePanel = new PackagePanel(javaResource, packageByNameJavaAwt);
 
             Collection<Package> rootPackages = javaResource.getRootPackages();
-            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
+            Package packageByName = javaResource.getPackageByName("java.util.logging");
+//            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
+            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Collections.singleton(packageByName));
             panelBasic.add(basePackagePanel, BorderLayout.CENTER);
 
             JScrollPane scrollPane = new JScrollPane(panelBasic);

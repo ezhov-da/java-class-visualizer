@@ -20,13 +20,9 @@ public class MouseMoveWindowListener extends MouseAdapter {
         this.component = component;
     }
 
-    private AtomicBoolean atomicBooleanStartDrag = new AtomicBoolean();
-
     @Override
     public void mousePressed(MouseEvent e) {
         SwingUtilities.invokeLater(() -> {
-            atomicBooleanStartDrag.set(true);
-            component.setCursor(new Cursor(Cursor.MOVE_CURSOR));
             Point pressedPointLocationOnScreen = e.getLocationOnScreen();
             int x = pressedPointLocationOnScreen.x - component.getLocationOnScreen().x;
             int y = pressedPointLocationOnScreen.y - component.getLocationOnScreen().y;
@@ -36,28 +32,17 @@ public class MouseMoveWindowListener extends MouseAdapter {
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
-        if (atomicBooleanStartDrag.get()) {
-            component.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            atomicBooleanStartDrag.set(false);
-        }
-    }
-
-    @Override
     public void mouseDragged(MouseEvent e) {
         SwingUtilities.invokeLater(() -> {
-            if (atomicBooleanStartDrag.get()) {
-
-                Point nowMouseLocation = e.getLocationOnScreen();
-                Point point = new Point(
-                        nowMouseLocation.x - diffOnScreen.x,
-                        nowMouseLocation.y - diffOnScreen.y
-                );
+            Point nowMouseLocation = e.getLocationOnScreen();
+            Point point = new Point(
+                    nowMouseLocation.x - diffOnScreen.x,
+                    nowMouseLocation.y - diffOnScreen.y
+            );
 //            LOG.trace("Новое расположение компонента до конвертации {}.", point);
-                SwingUtilities.convertPointFromScreen(point, component.getParent());
+            SwingUtilities.convertPointFromScreen(point, component.getParent());
 //            LOG.trace("Новое расположение компонента после конвертации {}.", point);
-                component.setLocation(point);
-            }
+            component.setLocation(point);
         });
     }
 }
