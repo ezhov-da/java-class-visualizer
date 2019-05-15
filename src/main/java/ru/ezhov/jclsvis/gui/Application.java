@@ -22,9 +22,11 @@ public class Application {
                 //
             }
             JFrame frame = new JFrame("Java Class Visualizer");
+            frame.setIconImage(new ImageIcon(Application.class.getResource("/images/app_16x16.png")).getImage());
 
 
-            String path = "D:\\programmer\\java-library\\image4j-0.7.2.jar";
+            String path = "D:\\programmer\\wildfly-12.0.0.Final\\modules\\system\\layers\\base\\org\\jboss\\vfs\\main\\jboss-vfs-3.2.12.Final.jar";
+//            String path = "D:\\programmer\\java-library\\image4j-0.7.2.jar";
 //            String path = "D:\\programmer\\java-library\\jd-gui-1.4.1.jar";
 
             BaseProjectImporter baseProjectImporter = new BaseProjectImporter();
