@@ -1,7 +1,7 @@
 # java-class-visualizer
 Приложение для анализа зависимостей Java классов.  
 
-Основной движок анализа зависимостей взять из [проекта](https://github.com/jonatan-kazmierczak/class-visualizer). 
+Основной движок анализа зависимостей взят из [проекта](https://github.com/jonatan-kazmierczak/class-visualizer). 
 
 Основной функционал:
 1. Отрисовка зависимостей классов между собой в разрезе пакетов
