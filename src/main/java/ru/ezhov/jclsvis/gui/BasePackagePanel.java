@@ -20,25 +20,25 @@ import java.util.*;
 public class BasePackagePanel extends JPanel {
     private static final Logger LOG = LoggerFactory.getLogger(BasePackagePanel.class);
     private JavaResource javaResource;
-    private Package aPackage;
+    private Package defaultPackage;
     private ClassPanelLocationStorage classPanelLocationStorage;
     private int defaultClassWidth = 250;
     private int defaultClassHeight = 50;
 
     public BasePackagePanel(JavaResource javaResource, Collection<Package> packages) {
-        Package aPackage = new Package("DEFAULT");
-        packages.forEach(p -> aPackage.addPackageName(p.getName()));
+        Package newDefaultPackage = new Package("DEFAULT");
+        packages.forEach(p -> newDefaultPackage.addPackageName(p.getName()));
         this.javaResource = javaResource;
-        this.aPackage = aPackage;
+        this.defaultPackage = newDefaultPackage;
         this.classPanelLocationStorage = new ClassPanelLocationStorage();
         init();
     }
 
     private void init() {
-        String packageName = aPackage.getName();
+        String packageName = defaultPackage.getName();
         LOG.trace("Построение панели для пакета {}", packageName);
         setLayout(null);
-        setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
+        setBorder(BorderFactory.createTitledBorder(defaultPackage.getName()));
 
         int widthDefault = 100;
         int heightDefault = 100;
@@ -47,7 +47,7 @@ public class BasePackagePanel extends JPanel {
 
         int width = indent;
         int height = indent;
-        Set<String> packageNames = aPackage.getPackageNames();
+        Set<String> packageNames = defaultPackage.getPackageNames();
         if (!packageNames.isEmpty()) {
             List<PackagePanel> packagePanels = new ArrayList<>();
             LOG.trace("{}. Количество подпакетов {}", packageName, packageNames.size());
@@ -88,7 +88,7 @@ public class BasePackagePanel extends JPanel {
             height = sizePackageHeightClean + maxHeight + indent;
         }
 
-        ClassBandlePanel classBandlePanel = buildClassBandlePanel(aPackage.getClassNames(), defaultClassWidth, defaultClassHeight);
+        ClassBandlePanel classBandlePanel = buildClassBandlePanel(defaultPackage.getClassNames(), defaultClassWidth, defaultClassHeight);
         classBandlePanel.setLocation(indent, height + indent);
         add(classBandlePanel);
 
@@ -110,7 +110,7 @@ public class BasePackagePanel extends JPanel {
     }
 
     public String getPackageName() {
-        return aPackage.getName();
+        return defaultPackage.getName();
     }
 
     @Override
@@ -123,10 +123,10 @@ public class BasePackagePanel extends JPanel {
         rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.setRenderingHints(rh);
-        drawDependencies(graphics2D);
+        drawClassesDependencies(graphics2D);
     }
 
-    private void drawDependencies(Graphics2D graphics2D) {
+    private void drawClassesDependencies(Graphics2D graphics2D) {
         Map<String, ClassPanel> all = classPanelLocationStorage.all();
         for (Map.Entry<String, ClassPanel> entry : all.entrySet()) {
             String name = entry.getKey();
@@ -150,33 +150,7 @@ public class BasePackagePanel extends JPanel {
                             CenterPoints centerPointsOriginal = CenterPoints.from(classPanel);
                             CenterPoints centerPointsRelation = CenterPoints.from(classPanelRelation);
 
-                            if ("true".equals(System.getProperty("isDebug", "false"))) {
-                                Point pointEast = centerPointsOriginal.getPointEast();
-                                SwingUtilities.convertPointFromScreen(pointEast, this);
-                                Point pointNorth = centerPointsOriginal.getPointNorth();
-                                SwingUtilities.convertPointFromScreen(pointNorth, this);
-                                Point pointSouth = centerPointsOriginal.getPointSouth();
-                                SwingUtilities.convertPointFromScreen(pointSouth, this);
-                                Point pointWest = centerPointsOriginal.getPointWest();
-                                SwingUtilities.convertPointFromScreen(pointWest, this);
-                                graphics2D.drawString("x: " + pointEast.x + " y: " + pointEast.y, pointEast.x, pointEast.y);
-                                graphics2D.drawString("x: " + pointNorth.x + " y: " + pointNorth.y, pointNorth.x, pointNorth.y);
-                                graphics2D.drawString("x: " + pointSouth.x + " y: " + pointSouth.y, pointSouth.x, pointSouth.y);
-                                graphics2D.drawString("x: " + pointWest.x + " y: " + pointWest.y, pointWest.x, pointWest.y);
-
-                                Point pointEastRelation = centerPointsRelation.getPointEast();
-                                SwingUtilities.convertPointFromScreen(pointEastRelation, this);
-                                Point pointNorthRelation = centerPointsRelation.getPointNorth();
-                                SwingUtilities.convertPointFromScreen(pointNorthRelation, this);
-                                Point pointSouthRelation = centerPointsRelation.getPointSouth();
-                                SwingUtilities.convertPointFromScreen(pointSouthRelation, this);
-                                Point pointWestRelation = centerPointsRelation.getPointWest();
-                                SwingUtilities.convertPointFromScreen(pointWestRelation, this);
-                                graphics2D.drawString("x: " + pointEastRelation.x + " y: " + pointEastRelation.y, pointEastRelation.x, pointEastRelation.y);
-                                graphics2D.drawString("x: " + pointNorthRelation.x + " y: " + pointNorthRelation.y, pointNorthRelation.x, pointNorthRelation.y);
-                                graphics2D.drawString("x: " + pointSouthRelation.x + " y: " + pointSouthRelation.y, pointSouthRelation.x, pointSouthRelation.y);
-                                graphics2D.drawString("x: " + pointWestRelation.x + " y: " + pointWestRelation.y, pointWestRelation.x, pointWestRelation.y);
-                            }
+                            drawDebug(graphics2D, centerPointsOriginal, centerPointsRelation);
                             MinimalDistance minimalDistance = new MinimalDistance();
                             Distance distance = minimalDistance.find(centerPointsOriginal, centerPointsRelation);
 
@@ -199,6 +173,37 @@ public class BasePackagePanel extends JPanel {
             }
         }
     }
+
+    private void drawDebug(Graphics2D graphics2D, CenterPoints centerPointsOriginal, CenterPoints centerPointsRelation) {
+        if ("true".equals(System.getProperty("isDebug", "false"))) {
+            Point pointEast = centerPointsOriginal.getPointEast();
+            SwingUtilities.convertPointFromScreen(pointEast, this);
+            Point pointNorth = centerPointsOriginal.getPointNorth();
+            SwingUtilities.convertPointFromScreen(pointNorth, this);
+            Point pointSouth = centerPointsOriginal.getPointSouth();
+            SwingUtilities.convertPointFromScreen(pointSouth, this);
+            Point pointWest = centerPointsOriginal.getPointWest();
+            SwingUtilities.convertPointFromScreen(pointWest, this);
+            graphics2D.drawString("x: " + pointEast.x + " y: " + pointEast.y, pointEast.x, pointEast.y);
+            graphics2D.drawString("x: " + pointNorth.x + " y: " + pointNorth.y, pointNorth.x, pointNorth.y);
+            graphics2D.drawString("x: " + pointSouth.x + " y: " + pointSouth.y, pointSouth.x, pointSouth.y);
+            graphics2D.drawString("x: " + pointWest.x + " y: " + pointWest.y, pointWest.x, pointWest.y);
+
+            Point pointEastRelation = centerPointsRelation.getPointEast();
+            SwingUtilities.convertPointFromScreen(pointEastRelation, this);
+            Point pointNorthRelation = centerPointsRelation.getPointNorth();
+            SwingUtilities.convertPointFromScreen(pointNorthRelation, this);
+            Point pointSouthRelation = centerPointsRelation.getPointSouth();
+            SwingUtilities.convertPointFromScreen(pointSouthRelation, this);
+            Point pointWestRelation = centerPointsRelation.getPointWest();
+            SwingUtilities.convertPointFromScreen(pointWestRelation, this);
+            graphics2D.drawString("x: " + pointEastRelation.x + " y: " + pointEastRelation.y, pointEastRelation.x, pointEastRelation.y);
+            graphics2D.drawString("x: " + pointNorthRelation.x + " y: " + pointNorthRelation.y, pointNorthRelation.x, pointNorthRelation.y);
+            graphics2D.drawString("x: " + pointSouthRelation.x + " y: " + pointSouthRelation.y, pointSouthRelation.x, pointSouthRelation.y);
+            graphics2D.drawString("x: " + pointWestRelation.x + " y: " + pointWestRelation.y, pointWestRelation.x, pointWestRelation.y);
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {

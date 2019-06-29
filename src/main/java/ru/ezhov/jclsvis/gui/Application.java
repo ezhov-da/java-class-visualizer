@@ -18,7 +18,7 @@ public class Application {
         {
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                 //
             }
             JFrame frame = new JFrame("Java Class Visualizer");
