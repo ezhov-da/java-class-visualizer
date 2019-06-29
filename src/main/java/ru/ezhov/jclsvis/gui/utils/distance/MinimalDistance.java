@@ -33,25 +33,6 @@ public class MinimalDistance {
         check(from.getPointSouth(), to.getPointNorth());
         check(from.getPointSouth(), to.getPointSouth());
 
-        check(to.getPointWest(), from.getPointWest());
-        check(to.getPointWest(), from.getPointEast());
-        check(to.getPointWest(), from.getPointNorth());
-        check(to.getPointWest(), from.getPointSouth());
-
-        check(to.getPointEast(), from.getPointWest());
-        check(to.getPointEast(), from.getPointEast());
-        check(to.getPointEast(), from.getPointNorth());
-        check(to.getPointEast(), from.getPointSouth());
-
-        check(to.getPointNorth(), from.getPointWest());
-        check(to.getPointNorth(), from.getPointEast());
-        check(to.getPointNorth(), from.getPointNorth());
-        check(to.getPointNorth(), from.getPointSouth());
-
-        check(to.getPointSouth(), from.getPointWest());
-        check(to.getPointSouth(), from.getPointEast());
-        check(to.getPointSouth(), from.getPointNorth());
-        check(to.getPointSouth(), from.getPointSouth());
         //LOG.trace("from {} to {} min {}", this.from, this.to, min);
         return new Distance(this.from, this.to);
     }
