@@ -162,7 +162,7 @@ public class BasePackagePanel extends JPanel {
                             if (classPanel.isSelected() || classPanelRelation.isSelected()) {
                                 graphics2D.setColor(Color.RED);
                             } else {
-                                graphics2D.setColor(Color.LIGHT_GRAY);
+                                graphics2D.setColor(Color.BLACK);
                             }
                             graphics2D.drawLine(p1.x, p1.y, p2.x, p2.y);
                             //TODO: верно рисовать линии
