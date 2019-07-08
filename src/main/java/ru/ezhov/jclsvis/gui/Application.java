@@ -5,10 +5,13 @@ import clsvis.process.importer.BaseProjectImporter;
 import clsvis.process.importer.CompiledClassImporter;
 import ru.ezhov.jclsvis.core.domain.JavaResource;
 import ru.ezhov.jclsvis.core.domain.Package;
+import ru.ezhov.jclsvis.gui.utils.ScreenImage;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -46,10 +49,54 @@ public class Application {
             Package packageByName = javaResource.getPackageByName("java.util.logging");
             BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
 //            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Collections.singleton(packageByName));
-            panelBasic.add(basePackagePanel, BorderLayout.CENTER);
 
-            JScrollPane scrollPane = new JScrollPane(panelBasic);
-            frame.add(scrollPane);
+
+            JToolBar toolBar = new JToolBar();
+            toolBar.add(new AbstractAction() {
+                {
+                    putValue(Action.NAME, "Показать все зависимости");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(basePackagePanel::drawAllDependencies);
+                }
+            });
+            toolBar.add(new AbstractAction() {
+                {
+                    putValue(Action.NAME, "Скрыть все зависимости");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(basePackagePanel::removeDependencies);
+                }
+            });
+
+            toolBar.add(new AbstractAction() {
+                {
+                    putValue(Action.NAME, "Сохранить изображение");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        JFileChooser fileChooser = new JFileChooser();
+                        int showSaveDialog = fileChooser.showSaveDialog(panelBasic);
+                        if (showSaveDialog == JFileChooser.OPEN_DIALOG) {
+                            File selectedFile = fileChooser.getSelectedFile();
+                            ScreenImage.writeImage(ScreenImage.createImage(basePackagePanel), selectedFile.getAbsolutePath());
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            panelBasic.add(toolBar, BorderLayout.NORTH);
+
+            JScrollPane scrollPane = new JScrollPane(basePackagePanel);
+            panelBasic.add(scrollPane, BorderLayout.CENTER);
+            frame.add(panelBasic);
             frame.setSize(1500, 600);
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

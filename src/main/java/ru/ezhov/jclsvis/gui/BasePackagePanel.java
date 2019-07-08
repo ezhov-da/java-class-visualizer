@@ -13,6 +13,8 @@ import ru.ezhov.jclsvis.gui.utils.distance.MinimalDistance;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.*;
 
@@ -24,6 +26,9 @@ public class BasePackagePanel extends JPanel {
     private ClassPanelLocationStorage classPanelLocationStorage;
     private int defaultClassWidth = 250;
     private int defaultClassHeight = 50;
+
+    private List<PackagePanel> packagePanelsAll = new ArrayList<>();
+    private ClassBandlePanel classBandlePanel;
 
     public BasePackagePanel(JavaResource javaResource, Collection<Package> packages) {
         Package newDefaultPackage = new Package("DEFAULT");
@@ -74,7 +79,7 @@ public class BasePackagePanel extends JPanel {
                         sizePackageWidthClean += packagePanelLast.getWidth() + indent;
                         LOG.trace("{}. Ширина пакета {}: W {}", packageName, packagePanelLast.getPackageName(), sizePackageWidthClean);
                         maxWidth = Math.max(maxWidth, sizePackageWidthClean);
-                        add(packagePanelLast);
+                        packagePanelsAll.add(packagePanelLast);
                         maxHeight = Math.max(maxHeight, packagePanelLast.getHeight());
                     } else {
                         break exit;
@@ -88,8 +93,10 @@ public class BasePackagePanel extends JPanel {
             height = sizePackageHeightClean + maxHeight + indent;
         }
 
-        ClassBandlePanel classBandlePanel = buildClassBandlePanel(defaultPackage.getClassNames(), defaultClassWidth, defaultClassHeight);
+        classBandlePanel = buildClassBandlePanel(defaultPackage.getClassNames(), defaultClassWidth, defaultClassHeight);
         classBandlePanel.setLocation(indent, height + indent);
+
+        packagePanelsAll.forEach(BasePackagePanel.this::add);
         add(classBandlePanel);
 
         int widthFinal = Math.max(widthDefault, Math.max(width, classBandlePanel.getWidth() + indent) + indent);
@@ -113,22 +120,63 @@ public class BasePackagePanel extends JPanel {
         return defaultPackage.getName();
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        rh.add(new RenderingHints(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY));
-        rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-        rh.add(new RenderingHints(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE));
-        rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
-        Graphics2D graphics2D = (Graphics2D) g;
-        graphics2D.setRenderingHints(rh);
-        drawClassesDependencies(graphics2D);
+    private JLabel dependensies;
+
+    public void drawAllDependencies() {
+        if (dependensies != null) {
+            removeDependencies();
+        }
+        drawClassesDependencies(classPanelLocationStorage.all());
+
+        JLabel label = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                rh.add(new RenderingHints(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY));
+                rh.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+                rh.add(new RenderingHints(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE));
+                rh.add(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
+                Graphics2D graphics2D = (Graphics2D) g;
+                graphics2D.setRenderingHints(rh);
+
+                points.forEach(p -> {
+                    graphics2D.setColor(p.color);
+                    graphics2D.drawLine(p.point1.x, p.point1.y, p.point2.x, p.point2.y);
+                });
+
+            }
+        };
+
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.println(1);
+            }
+        });
+
+        label.setSize(getSize());
+        label.setOpaque(false);
+        dependensies = label;
+        add(label, 0);
+        this.revalidate();
+        this.repaint();
     }
 
-    private void drawClassesDependencies(Graphics2D graphics2D) {
-        Map<String, ClassPanel> all = classPanelLocationStorage.all();
-        for (Map.Entry<String, ClassPanel> entry : all.entrySet()) {
+    public void removeDependencies() {
+        if (dependensies != null) {
+            this.remove(dependensies);
+            this.revalidate();
+            this.repaint();
+        }
+    }
+
+    private List<Points> points;
+
+    private void drawClassesDependencies(Map<String, ClassPanel> classPanels) {
+        points = new ArrayList<>();
+        for (Map.Entry<String, ClassPanel> entry : classPanels.entrySet()) {
             String name = entry.getKey();
             ClassPanel classPanel = entry.getValue();
             Class_ class_ = classPanel.getClass_();
@@ -150,7 +198,7 @@ public class BasePackagePanel extends JPanel {
                             CenterPoints centerPointsOriginal = CenterPoints.from(classPanel);
                             CenterPoints centerPointsRelation = CenterPoints.from(classPanelRelation);
 
-                            drawDebug(graphics2D, centerPointsOriginal, centerPointsRelation);
+//                            drawDebug(graphics2D, centerPointsOriginal, centerPointsRelation);
                             MinimalDistance minimalDistance = new MinimalDistance();
                             Distance distance = minimalDistance.find(centerPointsOriginal, centerPointsRelation);
 
@@ -159,15 +207,14 @@ public class BasePackagePanel extends JPanel {
                             Point p2 = distance.getTo();
                             SwingUtilities.convertPointFromScreen(p2, this);
 
+                            Color color;
                             if (classPanel.isSelected() || classPanelRelation.isSelected()) {
-                                graphics2D.setColor(Color.RED);
+                                color = Color.RED;
                             } else {
-                                graphics2D.setColor(Color.BLACK);
+                                color = Color.BLACK;
                             }
-                            graphics2D.drawLine(p1.x, p1.y, p2.x, p2.y);
-                            //TODO: верно рисовать линии
+                            points.add(new Points(p1, p2, color));
                         }
-
                     }
                 }
             }
@@ -204,10 +251,27 @@ public class BasePackagePanel extends JPanel {
         }
     }
 
+//    @Override
+//    protected void paintComponent(Graphics g) {
+//        setOpaque(true);
+//        super.paintComponent(g);
+//        drawClassesDependencies();
+//
+//        points.forEach(p -> {
+//            g.setColor(p.color);
+//            g.drawLine(p.point1.x, p.point1.y, p.point2.x, p.point2.y);
+//        });
+//    }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        repaint();
+    private class Points {
+        private final Point point1;
+        private final Point point2;
+        private final Color color;
+
+        public Points(Point point1, Point point2, Color color) {
+            this.point1 = point1;
+            this.point2 = point2;
+            this.color = color;
+        }
     }
 }

@@ -50,7 +50,7 @@ public class PackagePanel extends JPanel {
         setToolTipText(packageName);
         LOG.trace("Построение панели для пакета {}", packageName);
         setLayout(null);
-        setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
+        setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), aPackage.getName()));
 
         int widthDefault = 5;
         int heightDefault = 5;
