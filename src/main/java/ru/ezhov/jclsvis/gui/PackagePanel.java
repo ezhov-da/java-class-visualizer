@@ -125,7 +125,7 @@ public class PackagePanel extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {
                 SwingUtilities.invokeLater(() -> {
-                    setBorder(BorderFactory.createTitledBorder(aPackage.getName()));
+                    setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK), aPackage.getName()));
                 });
             }
         });

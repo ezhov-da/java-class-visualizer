@@ -24,7 +24,7 @@ public class BasePackagePanel extends JPanel {
     private JavaResource javaResource;
     private Package defaultPackage;
     private ClassPanelLocationStorage classPanelLocationStorage;
-    private int defaultClassWidth = 250;
+    private int defaultClassWidth = 50;
     private int defaultClassHeight = 50;
 
     private List<PackagePanel> packagePanelsAll = new ArrayList<>();
@@ -122,11 +122,27 @@ public class BasePackagePanel extends JPanel {
 
     private JLabel dependensies;
 
+
     public void drawAllDependencies() {
+        drawDependencies(classPanelLocationStorage.all());
+    }
+
+    public void drawOnlySelectedDependencies() {
+        Map<String, ClassPanel> selectedClasses = new HashMap<>();
+        Set<Map.Entry<String, ClassPanel>> entries = classPanelLocationStorage.all().entrySet();
+        for (Map.Entry<String, ClassPanel> entry : entries) {
+            if (entry.getValue().isSelected()) {
+                selectedClasses.put(entry.getKey(), entry.getValue());
+            }
+        }
+        drawDependencies(selectedClasses);
+    }
+
+    private void drawDependencies(Map<String, ClassPanel> classes) {
         if (dependensies != null) {
             removeDependencies();
         }
-        drawClassesDependencies(classPanelLocationStorage.all());
+        drawClassesDependencies(classes);
 
         JLabel label = new JLabel() {
             @Override

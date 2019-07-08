@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -47,7 +49,9 @@ public class Application {
 
             Collection<Package> rootPackages = javaResource.getRootPackages();
             Package packageByName = javaResource.getPackageByName("java.util.logging");
-            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
+            packageByName = javaResource.getPackageByName("org.jboss");
+//            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
+            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Arrays.asList(packageByName));
 //            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Collections.singleton(packageByName));
 
 
@@ -62,6 +66,17 @@ public class Application {
                     SwingUtilities.invokeLater(basePackagePanel::drawAllDependencies);
                 }
             });
+            toolBar.add(new AbstractAction() {
+                {
+                    putValue(Action.NAME, "Показать только выбранные зависимости");
+                }
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(basePackagePanel::drawOnlySelectedDependencies);
+                }
+            });
+
             toolBar.add(new AbstractAction() {
                 {
                     putValue(Action.NAME, "Скрыть все зависимости");
@@ -94,6 +109,7 @@ public class Application {
             });
             panelBasic.add(toolBar, BorderLayout.NORTH);
 
+            JPanel panel = new JPanel();
             JScrollPane scrollPane = new JScrollPane(basePackagePanel);
             panelBasic.add(scrollPane, BorderLayout.CENTER);
             frame.add(panelBasic);
