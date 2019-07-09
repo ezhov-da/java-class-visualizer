@@ -12,10 +12,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
@@ -30,12 +29,9 @@ public class Application {
             frame.setIconImage(new ImageIcon(Application.class.getResource("/images/app_16x16.png")).getImage());
 
 
-            String path = "D:\\programmer\\wildfly-12.0.0.Final\\modules\\system\\layers\\base\\org\\jboss\\vfs\\main\\jboss-vfs-3.2.12.Final.jar";
-//            String path = "D:\\programmer\\java-library\\image4j-0.7.2.jar";
-//            String path = "D:\\programmer\\java-library\\jd-gui-1.4.1.jar";
-
             BaseProjectImporter baseProjectImporter = new BaseProjectImporter();
-            baseProjectImporter.importProject(Collections.singletonList(new File(path)));
+            baseProjectImporter.importProject(Arrays.asList(new File("D:\\programmer\\wildfly-12.0.0.Final\\modules\\system\\layers\\base\\org\\jboss\\vfs\\main\\jboss-vfs-3.2.12.Final.jar")))
+            ;
             CompiledClassImporter classImporter = baseProjectImporter.getClassImporter();
 
             Collection<Class_> importedClasses = classImporter.getImportedClasses();
@@ -44,55 +40,70 @@ public class Application {
 
             JPanel panelBasic = new JPanel(new BorderLayout());
 
-//            Package packageByNameJavaAwt = javaResource.getPackageByName("java.awt");
-//            PackagePanel packagePanel = new PackagePanel(javaResource, packageByNameJavaAwt);
-
             Collection<Package> rootPackages = javaResource.getRootPackages();
-            Package packageByName = javaResource.getPackageByName("java.util.logging");
-            packageByName = javaResource.getPackageByName("org.jboss");
+//			Package packageByName = javaResource.getPackageByName("");
 //            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
-            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Arrays.asList(packageByName));
+            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, rootPackages);
 //            BasePackagePanel basePackagePanel = new BasePackagePanel(javaResource, Collections.singleton(packageByName));
 
 
             JToolBar toolBar = new JToolBar();
             toolBar.add(new AbstractAction() {
-                {
-                    putValue(Action.NAME, "Показать все зависимости");
-                }
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(basePackagePanel::drawAllDependencies);
                 }
+
+                {
+                    putValue(Action.NAME, "Показать все зависимости");
+                }
             });
             toolBar.add(new AbstractAction() {
-                {
-                    putValue(Action.NAME, "Показать только выбранные зависимости");
-                }
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(basePackagePanel::drawOnlySelectedDependencies);
                 }
+
+                {
+                    putValue(Action.NAME, "Показать только выбранные зависимости");
+                }
             });
 
             toolBar.add(new AbstractAction() {
-                {
-                    putValue(Action.NAME, "Скрыть все зависимости");
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(basePackagePanel::drawAllPackageDependencies);
                 }
 
+                {
+                    putValue(Action.NAME, "Отобразить все зависимости пакетов");
+                }
+            });
+            toolBar.add(new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(basePackagePanel::draw4LevelPackageDependencies);
+                }
+
+                {
+                    putValue(Action.NAME, "Отобразить 5-й уровень зависимости пакетов");
+                }
+            });
+
+            toolBar.addSeparator();
+            toolBar.add(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(basePackagePanel::removeDependencies);
                 }
+
+                {
+                    putValue(Action.NAME, "Скрыть все зависимости");
+                }
             });
 
+            toolBar.addSeparator();
             toolBar.add(new AbstractAction() {
-                {
-                    putValue(Action.NAME, "Сохранить изображение");
-                }
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     try {
@@ -106,7 +117,13 @@ public class Application {
                         ex.printStackTrace();
                     }
                 }
+
+                {
+                    putValue(Action.NAME, "Сохранить изображение");
+                }
             });
+
+
             panelBasic.add(toolBar, BorderLayout.NORTH);
 
             JPanel panel = new JPanel();
@@ -120,4 +137,6 @@ public class Application {
             frame.setVisible(true);
         });
     }
+
+
 }

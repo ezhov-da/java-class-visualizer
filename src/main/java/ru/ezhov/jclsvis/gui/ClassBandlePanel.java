@@ -19,6 +19,9 @@ public class ClassBandlePanel extends JPanel {
     private List<ClassPanel> classPanels = new ArrayList<>();
 
     public ClassBandlePanel(Collection<Class_> classes, ClassPanelLocationStorage classPanelLocationStorage, int width, int height) {
+        setBackground(Color.WHITE);
+        setOpaque(true);
+
         setLayout(null);
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         LOG.trace("Передано на построение {} класса(ов)", classes.size());
